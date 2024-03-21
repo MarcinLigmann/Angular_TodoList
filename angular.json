@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "01-components-basics-and-template-syntax1": {
+    "03-crud-and-services-basics": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -45,21 +45,14 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/01-components-basics-and-template-syntax1",
+            "outputPath": "dist/03-crud-and-services-basics",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -93,10 +86,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "01-components-basics-and-template-syntax1:build:production"
+              "browserTarget": "03-crud-and-services-basics:build:production"
             },
             "development": {
-              "browserTarget": "01-components-basics-and-template-syntax1:build:development"
+              "browserTarget": "03-crud-and-services-basics:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -104,13 +97,13 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "01-components-basics-and-template-syntax1:build"
+            "browserTarget": "03-crud-and-services-basics:build"
           }
         }
       }
     }
   },
   "cli": {
-    "analytics": "dca919ad-cc38-4a37-930d-b7b4fd22755f"
+    "analytics": "c1a0e1fc-2326-47ac-9328-59fc26ca2168"
   }
 }
