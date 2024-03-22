@@ -11,7 +11,9 @@ import { SubmitTextComponent } from "@ui/submit-text.component";
   standalone: true,
   imports: [TasksListComponent, SubmitTextComponent, NgIf],
   template: `
-    <app-submit-text (submitText)="listState.state === 'success' && addTask($event, listState.results)" />
+    <app-submit-text
+      (submitText)="listState.state === 'success' && addTask($event, listState.results)"
+    />
     <app-tasks-list
       *ngIf="listState.state === 'success'"
       class="block mt-4"
@@ -24,37 +26,35 @@ import { SubmitTextComponent } from "@ui/submit-text.component";
 export class TaskListPageComponent {
   listState: ComponentListState<Task> = { state: "idle" };
 
-  taskServise = inject(TasksService);
+  private tasksService = inject(TasksService);
 
   ngOnInit() {
     this.listState = { state: "loading" };
-    this.taskServise.getAll()
-      .then((response) => {
-          if (Array.isArray(response)) {
-            this.listState = {
-              state: "success",
-              results: response,
-            };
-          } else {
-            this.listState = {
-              state: "error",
-              error: response,
-            };
-          }
-      });
-  };
+    this.tasksService.getAll().then((response) => {
+      if (Array.isArray(response)) {
+        this.listState = {
+          state: "success",
+          results: response,
+        };
+      } else {
+        this.listState = {
+          state: "error",
+          error: response,
+        };
+      }
+    });
+  }
 
   addTask(name: string, tasks: Task[]) {
-    this.taskServise.add(name)
-      .then(response => {
-        if ('id' in response) {
-          this.listState = {
-            state: 'success',
-            results: [...tasks, response]
-          }
-        } else {
-          alert(response.message)
+    this.tasksService.add(name).then((response) => {
+      if ("id" in response) {
+        this.listState = {
+          state: "success",
+          results: tasks.concat(response),
+        };
+      } else {
+        alert(response.message);
       }
-    })
+    });
   }
 }

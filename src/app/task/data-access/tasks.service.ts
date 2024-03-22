@@ -3,72 +3,114 @@ import { Task } from "../model/Task";
 import { ListFetchingError } from "../../utils/list-state.type";
 import { wait } from "../../utils/wait";
 
+export type TaskUpdatePayload = {name?: string, done?:boolean};
+
+const URL = "http://localhost:3000";
+
+export async function getTasks() {
+  await wait();
+
+  return fetch(`${URL}/tasks`).then<Task[] | ListFetchingError>((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    return { status: response.status, message: response.statusText };
+  });
+}
+
+export async function addTask(name: string) {
+  await wait();
+
+  return fetch(`${URL}/tasks`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      createdAt: new Date().getTime(),
+      name,
+      done: false,
+    } as Task),
+  }).then<Task | Error>((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    return new Error("Cant add task");
+  });
+}
+
+export const tasksService = {
+  getTasks,
+  addTask,
+};
+
 @Injectable({
-    providedIn: 'root',
+  providedIn: "root",
 })
 export class TasksService {
-    private URL = "http://localhost:3000";
+  private URL = "http://localhost:3000";
 
-    async getAll() {
-        await wait();
-        return fetch(`${this.URL}/tasks`)
-        .then<Task[] | ListFetchingError>((response) => {
-          if (response.ok) {
-            return response.json();
-          }
+  async getAll() {
+    await wait();
 
-          return { status: response.status, message: response.statusText };
-        })
-    }
+    return fetch(`${this.URL}/tasks`).then<Task[] | ListFetchingError>((response) => {
+      if (response.ok) {
+        return response.json();
+      }
 
-    async delete(taskId: number) {
-        return fetch(`${this.URL}/tasks/${taskId}`,{
-            method: 'DELETE',
-        })
-        .then<Error | undefined>(response => {
-            if (response.ok) {
-              return response.json();
-            }
+      return { status: response.status, message: response.statusText };
+    });
+  }
 
-            return new Error('Can not delete task');
-          })
-    }
+  async delete(taskId: number) {
+    return fetch(`${this.URL}/tasks/${taskId}`, {
+      method: "DELETE",
+    }).then<Error | undefined>((response) => {
+      if (response.ok) {
+        return response.json();
+      }
 
-    async update(taskId: number, name: string) {
-        return fetch(`${URL}/tasks/${taskId}`, {
-            method: 'PATCH',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({name})
-        })
-        .then<Task | Error>(response => {
-            if (response.ok) {
-              return response.json();
-            }
-      
-            return new Error('Can not update task');
-          })
-    }
+      return new Error("Cant delete task");
+    });
+  }
 
-    async add(name: string) {
-        await wait();
-        return fetch(`${this.URL}/tasks`, {
-          method: 'POST',
-          headers: {
-            'content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            createdAt: new Date().getTime(),
-            name,
-            done: false,
-          } as Task)})
-          .then<Task | Error>(response => {
-            if (response.ok) {
-              return response.json();
-            }
+  async update(taskId: number, payload: TaskUpdatePayload) {
+    return fetch(`${this.URL}/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    }).then<Task | Error>((response) => {
+      if (response.ok) {
+        return response.json();
+      }
 
-            return new Error('Can not add task');
-          })
-    }
+      return new Error("Cant update task");
+    });
+  }
+
+  async add(name: string) {
+    await wait();
+
+    return fetch(`${this.URL}/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        createdAt: new Date().getTime(),
+        name,
+        done: false,
+      } as Task),
+    }).then<Task | Error>((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      return new Error("Cant add task");
+    });
+  }
 }
